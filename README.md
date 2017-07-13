@@ -120,7 +120,7 @@ The `CustomizedMapping.lua` file contains the mappings to variables that are mor
 Maps an item's location code to a full name. If a location mapping isn't given, the addon will display the location code. The location code is taken from the `location` node returned by a [Retrieve Holdings List](https://developers.exlibrisgroup.com/alma/apis/bibs/GET/gwPcGly021om4RTvtjbPleCklCGxeYAfEqJOcQOaLEvEGUPgvJFpUQ==/af2fb69d-64f4-42bc-bb05-d8a0ae56936e) API call.
 
 ```lua
-DataMapping.Locations["{Location Code }"] = "{Full Location Name}"
+CustomizedMapping.Locations["{Location Code }"] = "{Full Location Name}"
 ```
 
 
