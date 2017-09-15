@@ -59,7 +59,7 @@ The buttons for the Alma Blacklight Catalog Search addon are located in the *"Ca
 >**Import:** Imports the selected record in the items grid.
 
 ## Data Mappings
-Below are the default configurations for the catalog addon. The mappings within `DataMappings.lua` are settings that typically do not have to be modified from site to site. However, these data mappings can be changed to customize the fields, search queries, and xPaths to the data.
+Below are the default configurations for the catalog addon. The mappings within `DataMappings.lua` are settings that typically do not have to be modified from site to site. However, these data mappings can be changed to customize the fields, search queries, and xPath queries to the data.
 
 >**Caution:** Be sure to backup the `DataMappings.lua` file before making modifications Incorrectly configured mappings may cause the addon to stop functioning correctly.
 
@@ -91,11 +91,11 @@ The field that the addon reads from to perform the search.
 | DataMapping.SourceFields["Aeon"]["Catalog Number"] | `ReferenceNumber` |
 
 ### Bibliographic Import
-The information within this data mapping is used to perform the bibliographic api call. The `Field` is the product field that the data will be imported into, `MaxSize` is the maximum character size the data going into the product field can be, and `Value` is the xPath to the information.
+The information within this data mapping is used to perform the bibliographic api call. The `Field` is the product field that the data will be imported into, `MaxSize` is the maximum character size the data going into the product field can be, and `Value` is the xPath queries to the information.
 
->**Note:** One may specify multiple xPaths for a single field by separating them with a comma. The addon will try each xPath and returns the first successful one.
+>**Note:** One may specify multiple xPath queries for a single field by separating them with a comma. The addon will try each xPath query and returns the first successful one.
 >
->*Example:* An author can be inside of `100$a and 100$b` or `110$a and 110$b`. To accomplish this, provide an xPath for the 100 datafields and an xPath for the 110 datafields separated by a comma.
+>*Example:* An author can be inside of `100$a and 100$b` or `110$a and 110$b`. To accomplish this, provide an xPath query for the 100 datafields and an xPath query for the 110 datafields separated by a comma.
 >```
 >//datafield[@tag='100']/subfield[@code='a']|//datafield[@tag='100']/subfield[@code='b'],
 >//datafield[@tag='110']/subfield[@code='a']|//datafield[@tag='110']/subfield[@code='b']
@@ -132,7 +132,7 @@ There's more holdings information gathered than what is displayed in the item gr
 ### How to modify what bibliographic information is imported?
 To import additional bibliographic fields, add another lua table to the `DataMapping.ImportFields.Bibliographic[{Product Name}]` mapping. To remove a record from the importing remove it from the lua table.
 
-The table takes a `Field` which is the product's field name, a `MaxSize` which is the maximum characters to be imported into the product, and `Value` which is the xPath to the data returned by the [Retrieve Bibs](https://developers.exlibrisgroup.com/alma/apis/bibs/GET/gwPcGly021q2Z+qBbnVJzw==/af2fb69d-64f4-42bc-bb05-d8a0ae56936e) Alma API call.
+The table takes a `Field` which is the product's field name, a `MaxSize` which is the maximum characters to be imported into the product, and `Value` which is the xPath query to the data returned by the [Retrieve Bibs](https://developers.exlibrisgroup.com/alma/apis/bibs/GET/gwPcGly021q2Z+qBbnVJzw==/af2fb69d-64f4-42bc-bb05-d8a0ae56936e) Alma API call.
 
 ## Developers
 
