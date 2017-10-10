@@ -24,7 +24,7 @@ The addon is located within an item record of an Atlas Product. It is found on t
 >
 >**AutoRetrieveItems:** Defines whether or not the addon should automatically retrieve items related to a record being viewed. Disabling this setting can save the site on Alma API calls because it will only make a [Retrieve Holdings List](https://developers.exlibrisgroup.com/alma/apis/bibs/GET/gwPcGly021om4RTvtjbPleCklCGxeYAfEqJOcQOaLEvEGUPgvJFpUQ==/af2fb69d-64f4-42bc-bb05-d8a0ae56936e) call when the button is pressed.
 >
->**AlmaAPIURL:** The URL to the Alma API.
+>**AlmaAPIURL:** The URL to the Alma API. The API URL is generally the same between sites. (ex. `https://api-na.hosted.exlibrisgroup.com/almaws/v1/`) More information can be found on [Ex Libris' Site](https://developers.exlibrisgroup.com/alma/apis).
 >
 >**AlmaAPIKey:** API key used for interacting with the Alma API.
 >
