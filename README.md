@@ -1,7 +1,9 @@
 # Alma Blacklight Catalog Search
 
 ## Versions
-**1.0 -** Initial release
+**1.0.0 -** Initial release
+
+**1.1.0 -** Added LocationCode row. Corrected library mapping.
 
 ## Summary
 The addon is located within an item record of an Atlas Product. It is found on the `"Catalog Search"` tab. The addon takes information from the fields in the Atlas Product and searches the catalog in the configured ordered. When the item is found, one selects the desired holding in the *Item Grid* below the browser and clicks *Import*. The addon then makes the necessary API calls to the Alma API and imports the item's information into the Atlas Product.
@@ -104,12 +106,13 @@ The information within this data mapping is used to perform the bibliographic ap
 ### Holding Import
 The information within this data mapping is used import the correct information from the items grid. The `Field` is the product field that the data will be imported into, `MaxSize` is the maximum character size the data going into the product field can be, and `Value` is the FieldName of the column within the item grid.
 
-| Product Field   | Value           | Alma API XML Node | Description                                    |
-| --------------- | --------------- | ----------------- | ---------------------------------------------- |
-| ReferenceNumber | ReferenceNumber | mms_id            | The catalog identifier for the record (MMS ID) |
-| CallNumber      | CallNumber      | call_number       | The item's call number                         |
-| Location        | Location        | location          | The location of the item                       |
-| Library         | Library         | library           | The library where the item is held             |
+|  Product Field  |      Value      |  Alma API XML Node  |                              Description                              |
+| --------------- | --------------- | ------------------- | --------------------------------------------------------------------- |
+| ReferenceNumber | ReferenceNumber | mms_id              | The catalog identifier for the record (MMS ID)                        |
+| CallNumber      | CallNumber      | call_number         | The item's call number                                                |
+| Location        | Location        | location (expanded) | The location name of the item (Configured in `CustomizedMapping.lua`) |
+| Sublocation     | LocationCode    | location            | The location code returned by the Alma API                            |
+| Library         | Library         | library             | The library where the item is held                                    |
 
 > **Note:** The Holding ID can also be imported by adding another table with a Value of `HoldingId`.
 
@@ -120,7 +123,7 @@ The `CustomizedMapping.lua` file contains the mappings to variables that are mor
 Maps an item's location code to a full name. If a location mapping isn't given, the addon will display the location code. The location code is taken from the `location` node returned by a [Retrieve Holdings List](https://developers.exlibrisgroup.com/alma/apis/bibs/GET/gwPcGly021om4RTvtjbPleCklCGxeYAfEqJOcQOaLEvEGUPgvJFpUQ==/af2fb69d-64f4-42bc-bb05-d8a0ae56936e) API call.
 
 ```lua
-CustomizedMapping.Locations["{Location Code }"] = "{Full Location Name}"
+CustomizedMapping.Locations["{Location Code}"] = "{Full Location Name}"
 ```
 
 

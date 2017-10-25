@@ -337,9 +337,16 @@ function BuildItemsGrid()
     gridColumn.OptionsColumn.ReadOnly = true;
 
     gridColumn = gridView.Columns:Add();
-    gridColumn.Caption = "Location Code";
+    gridColumn.Caption = "Library";
     gridColumn.FieldName = "Library";
     gridColumn.Name = "gridColumnLibrary";
+    gridColumn.Visible = false;
+    gridColumn.OptionsColumn.ReadOnly = true;
+
+    gridColumn = gridView.Columns:Add();
+    gridColumn.Caption = "Location Code";
+    gridColumn.FieldName = "LocationCode";
+    gridColumn.Name = "gridColumnLocationCode";
     gridColumn.Visible = false;
     gridColumn.OptionsColumn.ReadOnly = true;
 
@@ -400,6 +407,7 @@ function CreateItemsTable()
     itemsTable.Columns:Add("HoldingId");
     itemsTable.Columns:Add("Library");
     itemsTable.Columns:Add("Location");
+    itemsTable.Columns:Add("LocationCode");
     itemsTable.Columns:Add("CallNumber");
 
     return itemsTable;
@@ -436,6 +444,9 @@ function BuildItemsDataSource(holdingsXmlDoc, mmsId)
             itemRow:set_Item("Location", itemNode["location"].InnerXml);
             log:DebugFormat("Location = {0}", itemNode["location"].InnerXml);
         end
+
+        itemRow:set_Item("LocationCode", itemNode["location"].InnerXml);
+        log:DebugFormat("Location Code = {0}", itemNode["location"].InnerXml);
 
         itemRow:set_Item("Library", itemNode["library"].InnerXml);
         log:DebugFormat("Library = {0}", itemNode["library"].InnerXml);

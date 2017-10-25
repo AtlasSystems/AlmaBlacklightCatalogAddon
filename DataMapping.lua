@@ -79,6 +79,6 @@ DataMapping.ImportFields.Holding["Aeon"] = {
     },
     {
         Field = "SubLocation", MaxSize = 255,
-        Value = "Library"
+        Value = "LocationCode"
     }
 };
