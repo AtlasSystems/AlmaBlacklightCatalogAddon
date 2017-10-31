@@ -5,6 +5,8 @@
 
 **1.1.0 -** Added LocationCode row. Corrected library mapping.
 
+**1.2.0 -** Correct bug that removes a incorrect characters from certain fields when `RemoveTrailingSpecialCharacters` is on.
+
 ## Summary
 The addon is located within an item record of an Atlas Product. It is found on the `"Catalog Search"` tab. The addon takes information from the fields in the Atlas Product and searches the catalog in the configured ordered. When the item is found, one selects the desired holding in the *Item Grid* below the browser and clicks *Import*. The addon then makes the necessary API calls to the Alma API and imports the item's information into the Atlas Product.
 

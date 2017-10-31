@@ -551,8 +551,9 @@ end
 function RemoveTrailingSpecialCharacters(item)
     local trailingCharacters = { '\\', '/', ',', '.', ';', ':', '-', '=' };
     for _, value in ipairs(trailingCharacters) do
-        if (string.match(item, value, -1)) then
+        if (string.find(item, value, -1, true)) then
             return Utility.Trim(item:sub(1, -2))
         end
     end
+    return item;
 end
