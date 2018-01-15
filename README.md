@@ -1,16 +1,25 @@
 # Alma Blacklight Catalog Search
 
 ## Versions
+
 **1.0.0 -** Initial release
 
-**1.1.0 -** Added LocationCode row. Corrected library mapping.
+**1.1.0 -** Added LocationCode row. Corrected library mapping. 
 
-**1.2.0 -** Correct bug that removes a incorrect characters from certain fields when `RemoveTrailingSpecialCharacters` is on.
+**1.2.0 -** Correct bug that removes a incorrect characters from certain 
+fields when `RemoveTrailingSpecialCharacters` is on. 
+
+**1.2.2 -** Updated AlmaApi.lua file
+
+**1.3.0 -** Removed inline references to Aeon's Transactions table. These references have been moved to the DataMapping.lua file. This will allow the addon to support Ares and ILLiad in the future. 
+
 
 ## Summary
+
 The addon is located within an item record of an Atlas Product. It is found on the `"Catalog Search"` tab. The addon takes information from the fields in the Atlas Product and searches the catalog in the configured ordered. When the item is found, one selects the desired holding in the *Item Grid* below the browser and clicks *Import*. The addon then makes the necessary API calls to the Alma API and imports the item's information into the Atlas Product.
 
 > **Note:** Only records with a valid MMS ID can be imported with this addon. An example of a record that may not have an MMS ID within your catalog is a record coming from an external resource like HathiTrust.
+
 
 ## Settings
 
@@ -35,7 +44,9 @@ The addon is located within an item record of an Atlas Product. It is found on t
 >**MMS_IDPrefix:** The MMS_ID Prefix are any characters that precede the mms_id of a record in the URL. The addon gets the current record's MMS ID by looking at the URL of the record's page. A typical Blacklight record url is `/catalog/{MMS ID}`, but if your site has anything that precedes the MMS ID, it must be specified in this setting.
 >*Example: UPenn's record URL is `/catalog/Franklin_{MMS ID}`, so their MMS_IDPrefix is "`Franklin_` "*
 
+
 ## Buttons
+
 The buttons for the Alma Blacklight Catalog Search addon are located in the *"Catalog Search"* ribbon in the top left of the requests.
 
 >**Back:** Navigate back one page.
@@ -62,7 +73,9 @@ The buttons for the Alma Blacklight Catalog Search addon are located in the *"Ca
 >
 >**Import:** Imports the selected record in the items grid.
 
+
 ## Data Mappings
+
 Below are the default configurations for the catalog addon. The mappings within `DataMappings.lua` are settings that typically do not have to be modified from site to site. However, these data mappings can be changed to customize the fields, search queries, and xPath queries to the data.
 
 >**Caution:** Be sure to backup the `DataMappings.lua` file before making modifications Incorrectly configured mappings may cause the addon to stop functioning correctly.
@@ -72,11 +85,11 @@ The query string is appended to the base catalog url (defined in the settings) w
 
 *Default Configuration:*
 
-| Search Type                               | Query String                          |
-| ----------------------------------------- | ------------------------------------- |
-| DataMapping.SearchTypes["Title"]          | `?search_field=title_search&q=`       |
-| DataMapping.SearchTypes["Author"]         | `?search_field=author_search&q=`      |
-| DataMapping.SearchTypes["Call Number"]    | `?search_field=call_number_xfacet&q=` |
+| Search Type                            | Query String                          |
+| -------------------------------------- | ------------------------------------- |
+| DataMapping.SearchTypes["Title"]       | `?search_field=title_search&q=`       |
+| DataMapping.SearchTypes["Author"]      | `?search_field=author_search&q=`      |
+| DataMapping.SearchTypes["Call Number"] | `?search_field=call_number_xfacet&q=` |
 
 >**Note:** The *Catalog Number* search type is not listed here because the Catalog Number button goes directly to item page instead of searching the catalog, therefore, the URL is constructed differently.
 
@@ -87,12 +100,13 @@ The field that the addon reads from to perform the search.
 
 *Default Configuration:*
 
-| Field                                              | Source Field      |
-| -------------------------------------------------- | ----------------- |
-| DataMapping.SourceFields["Aeon"]["Title"]          | `ItemTitle`       |
-| DataMapping.SourceFields["Aeon"]["Author"]         | `ItemAuthor`      |
-| DataMapping.SourceFields["Aeon"]["Call Number"]    | `CallNumber`      |
-| DataMapping.SourceFields["Aeon"]["Catalog Number"] | `ReferenceNumber` |
+| Mapping                                               | Source Table  | Source Field        |
+| ----------------------------------------------------- | ------------- | ------------------- |
+| DataMapping.SourceFields["Aeon"]["Title"]             | `Transaction` | `ItemTitle`         |
+| DataMapping.SourceFields["Aeon"]["Author"]            | `Transaction` | `ItemAuthor`        |
+| DataMapping.SourceFields["Aeon"]["Call Number"]       | `Transaction` | `CallNumber`        |
+| DataMapping.SourceFields["Aeon"]["Catalog Number"]    | `Transaction` | `ReferenceNumber`   |
+| DataMapping.SourceFields["Aeon"]["TransactionNumber"] | `Transaction` | `TransactionNumber` |
 
 ### Bibliographic Import
 The information within this data mapping is used to perform the bibliographic api call. The `Field` is the product field that the data will be imported into, `MaxSize` is the maximum character size the data going into the product field can be, and `Value` is the xPath queries to the information.
@@ -108,7 +122,7 @@ The information within this data mapping is used to perform the bibliographic ap
 ### Holding Import
 The information within this data mapping is used import the correct information from the items grid. The `Field` is the product field that the data will be imported into, `MaxSize` is the maximum character size the data going into the product field can be, and `Value` is the FieldName of the column within the item grid.
 
-|  Product Field  |      Value      |  Alma API XML Node  |                              Description                              |
+| Product Field   | Value           | Alma API XML Node   | Description                                                           |
 | --------------- | --------------- | ------------------- | --------------------------------------------------------------------- |
 | ReferenceNumber | ReferenceNumber | mms_id              | The catalog identifier for the record (MMS ID)                        |
 | CallNumber      | CallNumber      | call_number         | The item's call number                                                |
@@ -118,7 +132,9 @@ The information within this data mapping is used import the correct information 
 
 > **Note:** The Holding ID can also be imported by adding another table with a Value of `HoldingId`.
 
+
 ## Customized Mapping
+
 The `CustomizedMapping.lua` file contains the mappings to variables that are more site specific.
 
 ### Location Mapping
@@ -137,7 +153,8 @@ There's more holdings information gathered than what is displayed in the item gr
 ### How to modify what bibliographic information is imported?
 To import additional bibliographic fields, add another lua table to the `DataMapping.ImportFields.Bibliographic[{Product Name}]` mapping. To remove a record from the importing remove it from the lua table.
 
-The table takes a `Field` which is the product's field name, a `MaxSize` which is the maximum characters to be imported into the product, and `Value` which is the xPath query to the data returned by the [Retrieve Bibs](https://developers.exlibrisgroup.com/alma/apis/bibs/GET/gwPcGly021q2Z+qBbnVJzw==/af2fb69d-64f4-42bc-bb05-d8a0ae56936e) Alma API call.
+The table takes a `Table` and `Field` which correspond to a table and column name in the product, a `MaxSize` which is the maximum characters to be imported into the specified table column, and a `Value` which is the xPath query to the data returned by the [Retrieve Bibs](https://developers.exlibrisgroup.com/alma/apis/bibs/GET/gwPcGly021q2Z+qBbnVJzw==/af2fb69d-64f4-42bc-bb05-d8a0ae56936e) Alma API call.
+
 
 ## Developers
 

@@ -15,71 +15,44 @@ local log = types["log4net.LogManager"].GetLogger(rootLogger .. ".AlmaApi");
 
 AlmaApi = AlmaApiInternal;
 
-local function GetRequest( requestUrl )
-    local webClient = types["System.Net.WebClient"]();
-    local response = nil;
-    log:Debug("Created Web Client");
-    webClient.Encoding = types["System.Text.Encoding"].UTF8;
-    webClient.Headers:Add("Accept: application/xml");
-    webClient.Headers:Add("Content-Type: application/xml");
-
-    local success, error = pcall(function ()
-        response = webClient:DownloadString(requestUrl);
-    end);
-
-    webClient:Dispose();
-    log:Debug("Disposed Web Client");
-
-    if(success) then
-        return response;
-    else
-        log:InfoFormat("Unable to get response from the request url: {0}", error);
-    end
-end
-
-local function ReadResponse( responseString )
-    if (responseString and #responseString > 0) then
-
-        local responseDocument = types["System.Xml.XmlDocument"]();
-
-        local documentLoaded, error = pcall(function ()
-            responseDocument:LoadXml(responseString);
-        end);
-
-        if (documentLoaded) then
-            return responseDocument;
-        else
-            log:InfoFormat("Unable to load response content as XML: {0}", error);
-            return nil;
-        end
-    else
-        log:Info("Unable to read response content");
-    end
-
-    return nil;
-end
-
 local function RetrieveHoldingsList( mmsId )
     local requestUrl = AlmaApiInternal.ApiUrl .."bibs/"..
         Utility.URLEncode(mmsId) .."/holdings?apikey=" .. Utility.URLEncode(AlmaApiInternal.ApiKey);
+    local headers = {"Accept: application/xml", "Content-Type: application/xml"};
     log:DebugFormat("Request URL: {0}", requestUrl);
-    local response = GetRequest(requestUrl);
+    local response = WebClient.GetRequest(requestUrl, headers);
     log:DebugFormat("response = {0}", response);
 
-    return ReadResponse(response);
+    return WebClient.ReadResponse(response);
 end
 
 local function RetrieveBibs( mmsId )
     local requestUrl = AlmaApiInternal.ApiUrl .. "bibs?apikey="..
-         Utility.URLEncode(AlmaApiInternal.ApiKey) .. "&mms_id=" .. Utility.URLEncode(mmsId);
+        Utility.URLEncode(AlmaApiInternal.ApiKey) .. "&mms_id=" .. Utility.URLEncode(mmsId);
+    local headers = {"Accept: application/xml", "Content-Type: application/xml"};
     log:DebugFormat("Request URL: {0}", requestUrl);
 
-    local response = GetRequest(requestUrl);
+    local response = WebClient.GetRequest(requestUrl, headers);
     log:DebugFormat("response = {0}", response);
 
-    return ReadResponse(response);
+    return WebClient.ReadResponse(response);
+end
+
+local function RetrieveItemsList( mmsId, hodingId )
+    local requestUrl = AlmaApiInternal.ApiUrl .."bibs/"..
+        Utility.URLEncode(mmsId) .."/holdings/" .. Utility.URLEncode(hodingId) .. "/items?apikey=" ..
+        Utility.URLEncode(AlmaApiInternal.ApiKey);
+
+    local headers = {"Accept: application/xml", "Content-Type: application/xml"};
+
+    log:DebugFormat("Request URL: {0}", requestUrl);
+    local response = WebClient.GetRequest(requestUrl, headers);
+    log:DebugFormat("response = {0}", response);
+
+    return WebClient.ReadResponse(response);
 end
 
 -- Exports
 AlmaApi.RetrieveHoldingsList = RetrieveHoldingsList;
 AlmaApi.RetrieveBibs = RetrieveBibs;
+AlmaApi.RetrieveItemsList = RetrieveItemsList;

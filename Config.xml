@@ -2,7 +2,7 @@
 <Configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Name>Alma Blacklight Catalog Search</Name>
   <Author>Atlas Systems</Author>
-  <Version>1.2.1</Version>
+  <Version>1.3.0</Version>
   <Active>True</Active>
   <Type>Addon</Type>
   <Description>Catalog Search and Import Addon that uses Alma as the catalog and Blacklight as the discovery layer</Description>
@@ -43,6 +43,7 @@
     <File>DataMapping.lua</File>
     <File>CustomizedMapping.lua</File>
     <File>Catalog.lua</File>
+    <File>WebClient.lua</File>
     <File>AlmaApi.lua</File>
   </Files>
 </Configuration>

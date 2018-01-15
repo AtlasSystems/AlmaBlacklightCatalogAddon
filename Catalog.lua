@@ -94,7 +94,12 @@ function Init()
     AlmaApi.ApiKey = settings.AlmaApiKey;
 
     -- Search when opened if autoSearch is true
-    local transactionNumber = GetFieldValue("Transaction", "TransactionNumber");
+    
+    local transactionNumber = GetFieldValue(
+        DataMapping.SourceFields[product]["TransactionNumber"].Table,
+        DataMapping.SourceFields[product]["TransactionNumber"].Field
+    );
+
     if ((settings.AutoSearch) and (transactionNumber) and (transactionNumber > 0)) then
         log:Debug("Performing AutoSearch");
         PerformSearch(true, nil);
@@ -132,14 +137,16 @@ end
 
 function GetSearchType()
     local priorityList = settings.SearchPriorityList;
-    local fieldValue = nil;
 
-    for index = 1, #priorityList do
-        if DataMapping.SearchTypes[priorityList[index]] ~= nil and DataMapping.SourceFields[product][priorityList[index]] ~= nil then
-            fieldValue = GetFieldValue("Transaction", DataMapping.SourceFields[product][priorityList[index]])
+    for _, searchType in ipairs(priorityList) do
+        if DataMapping.SearchTypes[searchType] and DataMapping.SourceFields[product][searchType] then
+
+            local fieldDefinition = DataMapping.SourceFields[product][searchType]
+            local fieldValue = GetFieldValue(fieldDefinition.Table, fieldDefinition.Field)
+
             log:DebugFormat("fieldValue = {0}", fieldValue);
             if fieldValue and fieldValue ~= "" then
-                return priorityList[index];
+                return searchType;
             end
         end
     end
@@ -166,7 +173,8 @@ function PerformSearch(autoSearch, searchType)
         end
     end
 
-    local searchTerm = GetFieldValue("Transaction", DataMapping.SourceFields[product][searchType]);
+    local fieldDefinition = DataMapping.SourceFields[product][searchType]
+    local searchTerm = GetFieldValue(fieldDefinition.Table, fieldDefinition.Field);
 
     if (searchTerm == nil) then
         searchTerm = "";
@@ -256,9 +264,9 @@ function Truncate(value, size)
     end
 end
 
-function ImportField(target, newFieldValue, targetSize)
-    if ((newFieldValue ~= nil) and (newFieldValue ~= "") and (newFieldValue ~= types["System.DBNull"].Value)) then
-        SetFieldValue("Transaction", target, Truncate(newFieldValue, targetSize));
+function ImportField(targetTable, targetField, newFieldValue, targetSize)
+    if (newFieldValue and (newFieldValue ~= "") and (newFieldValue ~= types["System.DBNull"].Value)) then
+        SetFieldValue(targetTable, targetField, Truncate(newFieldValue, targetSize));
     end
 end
 
@@ -483,7 +491,7 @@ function DoItemImport()
     log:Debug("Updating the transaction object.");
 
     for _, target in ipairs(DataMapping.ImportFields.Holding["Aeon"]) do
-        ImportField(target.Field, importRow:get_Item(target.Value), target.MaxSize);
+        ImportField(target.Table, target.Field, importRow:get_Item(target.Value), target.MaxSize);
     end
 
     local mmsId = GetMmsId(catalogSearchForm.Browser.WebBrowser.Url:ToString());
@@ -505,7 +513,7 @@ function DoItemImport()
             for _, target in ipairs(DataMapping.ImportFields.Bibliographic[product]) do
                 if (target and target.Field and target.Field ~= "") then
                     log:DebugFormat("Value: {0}", target.Value);
-                    log:DebugFormat("Target: {0}", target.Field);
+                    log:DebugFormat("Target: {0}.{1}", target.Table, target.Field);
                     local marcSets = Utility.StringSplit(',', target.Value );
                     log:DebugFormat("marcSets.Count = {0}", #marcSets);
 
@@ -524,6 +532,7 @@ function DoItemImport()
                                 fieldValue = fieldValue .. " " .. datafieldNode:Item(datafieldNodeIndex).InnerText;
                             end
 
+                            log:DebugFormat("target.Table: {0}", target.Table);
                             log:DebugFormat("target.Field: {0}", target.Field);
                             log:DebugFormat("target.MaxSize: {0}", target.MaxSize);
 
@@ -533,7 +542,7 @@ function DoItemImport()
                                 fieldValue = Utility.Trim(fieldValue);
                             end
 
-                            ImportField(target.Field, fieldValue, target.MaxSize);
+                            ImportField(target.Table, target.Field, fieldValue, target.MaxSize);
 
                             -- Need to break from MARC Set loop so the first record isn't overwritten
                             break;
